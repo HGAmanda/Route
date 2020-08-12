@@ -1,3 +1,4 @@
+using System.Data.SqlClient;
 using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
 
@@ -7,11 +8,13 @@ namespace hughgrace.Api
     {
         private readonly IAssociateService _associateService;
         private readonly IRequestParsingService _requestParsing;
+        private readonly IDataService _dataService;
 
-        public ApiExample(IAssociateService associateService, IRequestParsingService requestParsing)
+        public ApiExample(IAssociateService associateService, IDataService dataService, IRequestParsingService requestParsing)
         {
             _associateService = associateService;
             _requestParsing = requestParsing;
+            _dataService = dataService;
         }
 
         public ApiDefinition GetDefinition()
@@ -25,10 +28,17 @@ namespace hughgrace.Api
 
         public IApiResponse Post(ApiRequest request)
         {
-            var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
-            var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
+            using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+            {
+                //var sql = $"select FirstName, LastName, BackOfficeId from CRM_Distributors where recordnumber = '{rObject.BackOfficeId}'"; //Note. This is subject to SQL Injection. Do not use in production.
+                //var qryRes = dbConnection.Query<QryResult>(sql).FirstOrDefault();
+                //var aName = $"{qryRes.FirstName} {qryRes.LastName}";
 
-            return new Ok(new { Status = 1, RequestMessage = rObject.Message, AssociateName = aName });
+                var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
+                var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
+
+                return new Ok(new { Status = 1, RequestMessage = rObject.Message, AssociateName = aName });
+            }
         }
     }
 
