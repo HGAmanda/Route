@@ -1,6 +1,9 @@
 using System.Data.SqlClient;
 using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
+using Dapper;
+using ServiceStack.OrmLite;
+using hughgrace.Models;
 
 namespace hughgrace.Api
 {
@@ -21,18 +24,16 @@ namespace hughgrace.Api
         {
             return new ApiDefinition
             {
-                Route = "hughgrace/example",
+                Route = "hughgrace/create",
                 RequireAuthentication = false
             };
         }
 
         public IApiResponse Post(ApiRequest request)
-        {
+        {   
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                //var sql = $"select FirstName, LastName, BackOfficeId from CRM_Distributors where recordnumber = '{rObject.BackOfficeId}'"; //Note. This is subject to SQL Injection. Do not use in production.
-                //var qryRes = dbConnection.Query<QryResult>(sql).FirstOrDefault();
-                //var aName = $"{qryRes.FirstName} {qryRes.LastName}";
+                dbConnection.CreateTable<RouteRate>();
 
                 var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
                 var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;

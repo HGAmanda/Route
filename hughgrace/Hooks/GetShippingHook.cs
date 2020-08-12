@@ -31,7 +31,7 @@ namespace hughgrace.Hooks
                 using(var dbConneciton = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
                     var query = "SELECT * FROM Client.RouteRate";
-                    var routeInsurance = dbConneciton.QueryFirstOrDefault<RouteInsurance>(query);
+                    var routeInsurance = dbConneciton.QueryFirstOrDefault<RouteRate>(query);
                     if (routeInsurance != null)
                     {
                         response.ShippingAmount += routeInsurance.Rate;

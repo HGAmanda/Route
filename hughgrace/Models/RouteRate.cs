@@ -1,6 +1,6 @@
 namespace hughgrace.Models
 {
-    public class RouteInsurance
+    public class RouteRate
     {
         public double Rate { get; set; }
         public double MiniumChargeAmount { get; set; }

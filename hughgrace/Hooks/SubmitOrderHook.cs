@@ -24,9 +24,7 @@ namespace hughgrace.Hooks
 
             var response = func(request);
             _orderService.UpdateOrder(new UpdateOrderInfo() { OrderNumber = response.OrderNumber, SpecialInstructions = "Route was used on this Order!" });
-            //Update OrderPackage with ShipMethod
 
-            //response = ProcessCouponCodesAfter(request, response);
             return response;
         }
     }
