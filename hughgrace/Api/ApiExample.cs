@@ -24,7 +24,7 @@ namespace hughgrace.Api
     {
       return new ApiDefinition
       {
-        Route = "hughgrace/createTableExample",
+        Route = "hughgraceServices/createTableExample",
         RequireAuthentication = false
       };
     }
