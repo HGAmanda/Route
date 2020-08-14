@@ -4,6 +4,7 @@ using DirectScale.Disco.Extension.Services;
 using Dapper;
 using ServiceStack.OrmLite;
 using hughgrace.Models;
+using ServiceStack.Support;
 
 namespace hughgrace.Api
 {
@@ -34,7 +35,7 @@ namespace hughgrace.Api
       // var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
       // var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
-      return new Ok(new { Status = 1, RequestMessage = "Route" });
+      return new Ok();
       //using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
       //{
       //    dbConnection.CreateTable<RouteRate>();
