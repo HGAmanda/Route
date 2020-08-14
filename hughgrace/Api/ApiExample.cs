@@ -31,10 +31,10 @@ namespace hughgrace.Api
 
     public IApiResponse Post(ApiRequest request)
     {
-      var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
+      // var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
       // var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
-      return new Ok(new { Status = 1, RequestMessage = rObject.Message });
+      return new Ok(new { Status = 1, RequestMessage = "Route" });
       //using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
       //{
       //    dbConnection.CreateTable<RouteRate>();
