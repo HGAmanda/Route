@@ -5,6 +5,7 @@ using Dapper;
 using ServiceStack.OrmLite;
 using hughgrace.Models;
 using ServiceStack.Support;
+using System.Net;
 
 namespace hughgrace.Api
 {
@@ -35,21 +36,14 @@ namespace hughgrace.Api
             //var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
             //var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
-        var response = new ExampleResponse { Status = 1, Message = "Route" };
-        return new Ok(response);
+        var response = new ApiResponse { StatusCode = HttpStatusCode.OK };
+        return response;
       //using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
       //{
       //    dbConnection.CreateTable<RouteRate>();
       //}
     }
   }
-
-public class ExampleResponse
-{
-    public int Status { get; set; }
-    public string Message { get; set; }
-
-}
 
   public class ExampleRequest
   {
