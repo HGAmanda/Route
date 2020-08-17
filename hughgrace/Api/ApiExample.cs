@@ -10,14 +10,12 @@ namespace hughgrace.Api
         private readonly IAssociateService _associateService;
         private readonly IRequestParsingService _requestParsing;
         private IDataService _dataService;
-        private DataSet _dataSet;
 
         public ApiExample(IAssociateService associateService, IDataService dataService, IRequestParsingService requestParsing)
         {
             _associateService = associateService;
             _requestParsing = requestParsing;
             _dataService = dataService;
-            _dataSet = new DataSet()
         }
 
         public ApiDefinition GetDefinition()
