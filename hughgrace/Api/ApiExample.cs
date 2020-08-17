@@ -33,15 +33,15 @@ namespace hughgrace.Api
 
         public IApiResponse Post(ApiRequest request)
         {
-            using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
-            {
-                dbConnection.CreateTable<RouteRate>();
-            }
-            //var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
-            //var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
+            //using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+            //{
+            //    dbConnection.CreateTable<RouteRate>();
+            //}
+            ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
+            ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
-            var response = new ExampleResponse { Status = 1, RequestMessage = "Route" };
-            return new Ok(response);
+            //var response = new ExampleResponse { Status = 1, RequestMessage = "Route" };
+            return new Ok();
         }
     }
 
