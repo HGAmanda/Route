@@ -3,6 +3,7 @@ using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
 using Dapper;
 using System.Data;
+using System.Collections.Generic;
 
 namespace hughgrace.Api
 {
@@ -30,11 +31,15 @@ namespace hughgrace.Api
 
         public IApiResponse Post(ApiRequest request)
         {
-            var affect = 0;
+            IEnumerable<int> affect;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                var createTable = "CREATE TABLE RouteRate (Rate DOUBLE, MinimumChargeAmount DOUBLE, RecordNumber INT)";
-                affect = dbConnection.Execute(createTable);
+                affect = dbConnection.Query<int>(@"CREATE TABLE RouteRate (
+                    Rate DOUBLE,
+                    MinimumChargeAmount DOUBLE,
+                    RecordNumber INT
+                );
+                SELECT * FROM RouteRate;");
             }
             ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
             ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
