@@ -37,8 +37,11 @@ namespace hughgrace.Api
                       MinimumChargeAmount DOUBLE,
                       RecordNumber INT
                     );";
+                dbConnection.Open();
                 using (var command = new SqlCommand(commandStr, dbConnection))
                     affect = command.ExecuteNonQuery();
+
+                dbConnection.Close();
             }
             ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
             ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
