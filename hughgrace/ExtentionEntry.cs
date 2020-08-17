@@ -16,7 +16,8 @@ namespace hughgrace
             services.AddScoped<IHook<SubmitOrderHookRequest, SubmitOrderHookResponse>, SubmitOrderHook>();
             services.AddScoped<IHook<GetShippingHookRequest, GetShippingHookResponse>, GetShippingHook>();
 
-            services.AddSingleton<IApiEndpoint, ApiExample>();
+            services.AddSingleton<IApiEndpoint, CreateTableEndpoint>();
+            services.AddSingleton<IApiEndpoint, FillTableEndpoint>();
         }
     }
 }
