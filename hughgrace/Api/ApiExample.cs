@@ -33,7 +33,7 @@ namespace hughgrace.Api
             var affect = 0;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                var createTable = "CREATE TABLE IF NOT EXISTS RouteRate (Rate DOUBLE, MinimumChargeAmount DOUBLE, RecordNumber INT)";
+                var createTable = "CREATE TABLE RouteRate (Rate DOUBLE, MinimumChargeAmount DOUBLE, RecordNumber INT)";
                 affect = dbConnection.Execute(createTable);
             }
             ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
