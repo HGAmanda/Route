@@ -32,7 +32,7 @@ namespace hughgrace.Api
             int affect;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                var commandStr = @"CREATE TABLE IF NOT EXISTS RouteRate ( Rate decimal, MinimumChargeAmount decimal, RecordNumber int);";
+                var commandStr = @"CREATE TABLE RouteRate ( Rate decimal, MinimumChargeAmount decimal, RecordNumber int);";
                 dbConnection.Open();
                 using (var command = new SqlCommand(commandStr, dbConnection))
                     affect = command.ExecuteNonQuery();
