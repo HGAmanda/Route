@@ -41,7 +41,7 @@ namespace hughgrace.Api
             ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
             //var response = new ExampleResponse { Status = 1, RequestMessage = "Route" };
-            return new Ok();
+            return new Ok(new { Status = 1, RequestMessage = "Route" });
         }
     }
 
