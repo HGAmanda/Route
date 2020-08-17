@@ -1,9 +1,7 @@
 using System.Data.SqlClient;
 using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
-using Dapper;
 using System.Data;
-using System.Collections.Generic;
 
 namespace hughgrace.Api
 {
@@ -12,12 +10,14 @@ namespace hughgrace.Api
         private readonly IAssociateService _associateService;
         private readonly IRequestParsingService _requestParsing;
         private IDataService _dataService;
+        private DataSet _dataSet;
 
         public ApiExample(IAssociateService associateService, IDataService dataService, IRequestParsingService requestParsing)
         {
             _associateService = associateService;
             _requestParsing = requestParsing;
             _dataService = dataService;
+            _dataSet = new DataSet()
         }
 
         public ApiDefinition GetDefinition()
@@ -31,15 +31,16 @@ namespace hughgrace.Api
 
         public IApiResponse Post(ApiRequest request)
         {
-            IEnumerable<int> affect;
+            int affect;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                affect = dbConnection.Query<int>(@"CREATE TABLE RouteRate (
-                    Rate DOUBLE,
-                    MinimumChargeAmount DOUBLE,
-                    RecordNumber INT
-                );
-                SELECT * FROM RouteRate;");
+                var commandStr = @"CREATE TABLE IF NOT EXISTS RouteRate (
+                      Rate DOUBLE,
+                      MinimumChargeAmount DOUBLE,
+                      RecordNumber INT
+                    );";
+                using (var command = new SqlCommand(commandStr, dbConnection))
+                    affect = command.ExecuteNonQuery();
             }
             ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
             ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
