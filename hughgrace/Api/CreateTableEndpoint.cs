@@ -1,7 +1,6 @@
 using System.Data.SqlClient;
 using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
-using System.Data;
 
 namespace hughgrace.Api
 {
@@ -18,7 +17,7 @@ namespace hughgrace.Api
         {
             return new ApiDefinition
             {
-                Route = "hughgraceServices/table",
+                Route = "hughgraceServices/createTable",
                 RequireAuthentication = true
             };
         }
@@ -28,12 +27,11 @@ namespace hughgrace.Api
             int affect;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                var commandStr = @"CREATE TABLE RouteRate ( Rate decimal, MinimumChargeAmount decimal, RecordNumber int);";
+                var commandStr = @"CREATE TABLE RouteRate (Rate decimal NOT NULL, MinimumChargeAmount decimal NOT NULL, RecordNumber int NOT NULL PRIMARY KEY);";
                 dbConnection.Open();
                 using (var command = new SqlCommand(commandStr, dbConnection))
                     affect = command.ExecuteNonQuery();
             }
-            // var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
 
             return new Ok(new { Status = 1, RequestMessage = affect });
         }
