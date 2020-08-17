@@ -2,10 +2,7 @@ using System.Data.SqlClient;
 using DirectScale.Disco.Extension.Api;
 using DirectScale.Disco.Extension.Services;
 using Dapper;
-using ServiceStack.OrmLite;
-using hughgrace.Models;
-using ServiceStack.Support;
-using System.Net;
+using System.Data;
 
 namespace hughgrace.Api
 {
@@ -33,15 +30,17 @@ namespace hughgrace.Api
 
         public IApiResponse Post(ApiRequest request)
         {
-            //using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
-            //{
-            //    dbConnection.CreateTable<RouteRate>();
-            //}
+            var affect = 0;
+            using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+            {
+                var createTable = "CREATE TABLE IF NOT EXISTS RouteRate (Rate DOUBLE, MinimumChargeAmount DOUBLE, RecordNumber INT)";
+                affect = dbConnection.Execute(createTable);
+            }
             ////var rObject = _requestParsing.ParseBody<ExampleRequest>(request);
             ////var aName = _associateService.GetAssociate(rObject.BackOfficeId).Name;
 
             //var response = new ExampleResponse { Status = 1, RequestMessage = "Route" };
-            return new Ok(new { Status = 1, RequestMessage = "Route" });
+            return new Ok(new { Status = 1, RequestMessage = affect });
         }
     }
 
