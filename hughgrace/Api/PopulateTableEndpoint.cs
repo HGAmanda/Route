@@ -39,15 +39,9 @@ namespace hughgrace.Api
             return "INSERT INTO RouteRate (Rate, MinimumChargeAmount, RecordNumber) VALUES ";
         }
 
-        private string CreateTempTable()
+        private string DeleteAllRouteRate()
         {
-            return @"CREATE TABLE #tempTable (
-	            Rate decimal NOT NULL,
-	            MinimumChargeAmount decimal NOT NULL,
-	            RecordNumber int NOT NULL PRIMARY KEY
-            )
-
-            INSERT INTO #tempTable (Rate, MinimumChargeAmount, RecordNumber) VALUES ";
+            return @"DELETE FROM RouteRate;";
         }
 
         private string UpdateRouteRateTable()
@@ -95,7 +89,8 @@ namespace hughgrace.Api
                     sql.Append(InsertRouteRateTable());
                 } else
                 {
-                    sql.Append(CreateTempTable());
+                    sql.Append(DeleteAllRouteRate());
+                    sql.Append(InsertRouteRateTable());
                 }
 
                 for (int i = 0; i < req.Rates.Length; i++)
