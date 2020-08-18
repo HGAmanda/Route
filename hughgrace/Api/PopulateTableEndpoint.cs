@@ -4,6 +4,8 @@ using DirectScale.Disco.Extension.Services;
 using hughgrace.Models;
 using System.Text;
 using Dapper;
+using System;
+using System.Net;
 
 namespace hughgrace.Api
 {
@@ -43,51 +45,59 @@ namespace hughgrace.Api
                 conn.Open();
                 using (var trans = conn.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
-                    var sql = new StringBuilder();
-                    var count = conn.QueryFirstOrDefault<int>(@"SELECT COUNT(RecordNumber) FROM RouteRate");
-                    if (count == 0)
+                    try
                     {
-                        sql.Append(@"INSERT INTO RouteRate (Rate, MinimumChargeAmount, RecordNumber) VALUES ");
-                    } else
-                    {
-                        sql.Append(@"CREATE TABLE #tempTable (
+                        var sql = new StringBuilder();
+                        var count = conn.QueryFirstOrDefault<int>(@"SELECT COUNT(RecordNumber) FROM RouteRate");
+                        if (count == 0)
+                        {
+                            sql.Append(@"INSERT INTO RouteRate (Rate, MinimumChargeAmount, RecordNumber) VALUES ");
+                        }
+                        else
+                        {
+                            sql.Append(@"CREATE TABLE #tempTable (
 	                        Rate decimal NOT NULL,
 	                        MinimumChargeAmount decimal NOT NULL,
 	                        RecordNumber int NOT NULL PRIMARY KEY
                         )
 
                         INSERT INTO #tempTable (Rate, MinimumChargeAmount, RecordNumber) VALUES ");
-                    }
-
-                    for (int i = 0; i < req.Rates.Length; i++)
-                    {
-                        var rate = req.Rates[i];
-                        sql.AppendFormat("({0},{1},{2}),", rate.Rate, rate.MinimumChargeAmount, i);
-                    }
-                    sql.Length--; // erase last ","
-
-                    sqlRaw = sql.ToString();
-                    using (var cmd = new SqlCommand(sqlRaw, conn, trans))  
-                    {
-                        affect = cmd.ExecuteNonQuery();
-                    }
-
-                    if (count == 0)
-                    {
-                        var updateSql = @"UPDATE
-                                T1
-                            SET
-                                [Rate] = T2.[Rate]
-                                [MinimumChargeAmount] = T2.[MinimumChargeAmount]
-                            FROM
-                                RouteRate T1
-                                JOIN
-                                #tempTable T2 ON T2.[RecordNumber] = T1.[RecordNumber]";
-
-                        using (var cmd = new SqlCommand(updateSql, conn, trans))
-                        {
-                            updateAffect = cmd.ExecuteNonQuery();
                         }
+
+                        for (int i = 0; i < req.Rates.Length; i++)
+                        {
+                            var rate = req.Rates[i];
+                            sql.AppendFormat("({0},{1},{2}),", rate.Rate, rate.MinimumChargeAmount, i);
+                        }
+                        sql.Length--; // erase last ","
+
+                        sqlRaw = sql.ToString();
+                        using (var cmd = new SqlCommand(sqlRaw, conn, trans))
+                        {
+                            affect = cmd.ExecuteNonQuery();
+
+                            if (count != 0)
+                            {
+                                var updateSql = @"UPDATE
+                                        T1
+                                    SET
+                                        [Rate] = T2.[Rate]
+                                        [MinimumChargeAmount] = T2.[MinimumChargeAmount]
+                                    FROM
+                                        RouteRate T1
+                                    JOIN
+                                        #tempTable T2 ON T2.[RecordNumber] = T1.[RecordNumber]";
+
+                                cmd.CommandText = updateSql;
+                                updateAffect = cmd.ExecuteNonQuery();
+                            }
+
+                            trans.Commit();
+                        }
+                    } catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        return new Ok(new { Status = 500, SqlRaw = sqlRaw, InsertAffect = affect, UpdateAffect = updateAffect, Exce = ex });
                     }
                 }
             }
