@@ -41,26 +41,13 @@ namespace hughgrace.Api
 
         private string DeleteAllRouteRate()
         {
-            return @"DELETE FROM RouteRate;";
-        }
-
-        private string UpdateRouteRateTable()
-        {
-            return @"UPDATE
-                T1
-            SET
-                [Rate] = T2.[Rate]
-                [MinimumChargeAmount] = T2.[MinimumChargeAmount]
-            FROM
-                RouteRate T1
-            JOIN
-                #tempTable T2 ON T2.[RecordNumber] = T1.[RecordNumber]";
+            return @"DELETE FROM RouteRate";
         }
 
         public IApiResponse Post(ApiRequest request)
         {
-            var affect = 0;
-            var updateAffect = 0;
+            var insertAffect = 0;
+            var deletedAffect = 0;
             var sqlRaw = "";
             var req = _requestParsing.ParseBody<RouteRateRequest>(request);
 
@@ -79,42 +66,44 @@ namespace hughgrace.Api
 
                 transaction = connection.BeginTransaction("RouteTransaction");
 
-                command.Connection = connection;
-                command.Transaction = transaction;
-
-                var sql = new StringBuilder();
-
-                if (count == 0)
+                try
                 {
+                    command.Connection = connection;
+                    command.Transaction = transaction;
+
+                    var sql = new StringBuilder();
+
+                    if (count != 0)
+                    {
+                        command.CommandText = DeleteAllRouteRate();
+                        deletedAffect = command.ExecuteNonQuery();
+                    }
+                    
                     sql.Append(InsertRouteRateTable());
-                } else
+
+                    for (int i = 0; i < req.Rates.Length; i++)
+                    {
+                        var rate = req.Rates[i];
+                        sql.AppendFormat("({0},{1},{2}),", rate.Rate, rate.MinimumChargeAmount, i);
+                    }
+
+                    sql.Length--; // erase last ","
+
+                    sqlRaw = sql.ToString();
+
+                    command.CommandText = sqlRaw;
+                    insertAffect = command.ExecuteNonQuery();
+
+                    transaction.Commit();
+                } catch (Exception ex)
                 {
-                    sql.Append(DeleteAllRouteRate());
-                    sql.Append(InsertRouteRateTable());
+                    transaction.Rollback();
+                    return new Ok(new { Status = 500, Message = "Transaction Rolled Back", Error = ex.Message });
                 }
-
-                for (int i = 0; i < req.Rates.Length; i++)
-                {
-                    var rate = req.Rates[i];
-                    sql.AppendFormat("({0},{1},{2}),", rate.Rate, rate.MinimumChargeAmount, i);
-                }
-                sql.Length--; // erase last ","
-
-                sqlRaw = sql.ToString();
-
-                command.CommandText = sqlRaw;
-                affect = command.ExecuteNonQuery();
-
-                if (count != 0)
-                {
-                    command.CommandText = UpdateRouteRateTable();
-                    updateAffect = command.ExecuteNonQuery();
-                }
-
-                transaction.Commit();
+                
             }
 
-            return new Ok(new { Status = 1, SqlRaw = sqlRaw, InsertAffect = affect, UpdateAffect = updateAffect });
+            return new Ok(new { Status = 1, SqlRaw = sqlRaw, InsertAffect = insertAffect, DeletedAffect = deletedAffect });
         }
 
         public class RouteRateRequest
