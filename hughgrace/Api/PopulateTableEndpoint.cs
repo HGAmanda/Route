@@ -45,8 +45,8 @@ namespace hughgrace.Api
                 conn.Open();
                 using (var trans = conn.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted))
                 {
-                    try
-                    {
+                    //try
+                    //{
                         var sql = new StringBuilder();
                         var count = conn.QueryFirstOrDefault<int>(@"SELECT COUNT(RecordNumber) FROM RouteRate");
                         if (count == 0)
@@ -94,11 +94,10 @@ namespace hughgrace.Api
 
                             trans.Commit();
                         }
-                    } catch (Exception ex)
-                    {
-                        trans.Rollback();
-                        return new Ok(new { Status = 500, SqlRaw = sqlRaw, InsertAffect = affect, UpdateAffect = updateAffect, Exce = ex });
-                    }
+                    //} catch (Exception ex)
+                    //{
+                    //    trans.Rollback();
+                    //}
                 }
             }
             
