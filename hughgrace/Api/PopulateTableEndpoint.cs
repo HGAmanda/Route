@@ -6,6 +6,7 @@ using System.Text;
 using Dapper;
 using System;
 using System.Net;
+using System.Collections.Generic;
 
 namespace hughgrace.Api
 {
@@ -48,7 +49,7 @@ namespace hughgrace.Api
         {
             var insertAffect = 0;
             var deletedAffect = 0;
-            var sqlRaw = "";
+            IEnumerable<RouteRate> rates;
             var req = _requestParsing.ParseBody<RouteRateRequest>(request);
 
             if (req.Rates.Length == 0) {
@@ -89,7 +90,7 @@ namespace hughgrace.Api
 
                     sql.Length--; // erase last ","
 
-                    sqlRaw = sql.ToString();
+                    var sqlRaw = sql.ToString();
 
                     command.CommandText = sqlRaw;
                     insertAffect = command.ExecuteNonQuery();
@@ -100,10 +101,11 @@ namespace hughgrace.Api
                     transaction.Rollback();
                     return new Ok(new { Status = 500, Message = "Transaction Rolled Back", Error = ex.Message });
                 }
-                
+
+                rates = connection.Query<RouteRate>("SELECT * FROM RouteRate");
             }
 
-            return new Ok(new { Status = 1, SqlRaw = sqlRaw, InsertAffect = insertAffect, DeletedAffect = deletedAffect });
+            return new Ok(new { Status = 1, Rates = rates, InsertAffect = insertAffect, DeletedAffect = deletedAffect });
         }
 
         public class RouteRateRequest
