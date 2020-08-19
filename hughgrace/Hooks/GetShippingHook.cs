@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using Dapper;
+using DirectScale.Disco.Extension;
 using DirectScale.Disco.Extension.Hooks;
 using DirectScale.Disco.Extension.Hooks.Orders.Shipping;
 using DirectScale.Disco.Extension.Services;
@@ -28,9 +29,17 @@ namespace hughgrace.Hooks
             var response = func(request);
             if (routeincluded)
             {
+                double subtotal = 0;
+                foreach (var item in request.Items)
+                {
+                    subtotal += item.Price * item.Quantity;
+                }
+
                 using(var dbConneciton = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
-                    var query = "SELECT * FROM Client.RouteRate";
+                    var query = string.Format(@"SELECT * FROM RouteRate
+                        WHERE MinimumChargeAmount <= {0}
+                        ORDER BY MinimumChargeAmount DESC;", subtotal);
                     var routeInsurance = dbConneciton.QueryFirstOrDefault<RouteRate>(query);
                     if (routeInsurance != null)
                     {
