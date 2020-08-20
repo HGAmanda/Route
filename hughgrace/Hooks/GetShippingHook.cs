@@ -20,13 +20,10 @@ namespace hughgrace.Hooks
         public GetShippingHookResponse Invoke(GetShippingHookRequest request, Func<GetShippingHookRequest, GetShippingHookResponse> func)
         {
             var routeincluded = false;
-            foreach (var item in request.Items)
+            if (request.ShipMethodId > 500)
             {
-                if (item.Custom.Field1 == "Route")
-                {
-                    routeincluded = true;
-                    break;
-                }
+                request.ShipMethodId -= 500;
+                routeincluded = true;
             }
 
             var response = func(request);
@@ -38,7 +35,7 @@ namespace hughgrace.Hooks
                     subtotal += item.Price * item.Quantity;
                 }
 
-                using(var dbConneciton = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+                using (var dbConneciton = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
                     var query = string.Format(@"SELECT * FROM RouteRate
                         WHERE MinimumChargeAmount <= {0}
@@ -47,7 +44,7 @@ namespace hughgrace.Hooks
                     if (routeInsurance != null)
                     {
                         response.ShippingAmount += routeInsurance.Rate;
-                    }   
+                    }
                 }
             }
 

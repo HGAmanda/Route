@@ -21,8 +21,6 @@ namespace hughgrace.Hooks
             if (routeIncluded)
             {
                 request.Order.Custom.Field1 = "Route";
-                request.Order.LineItems[0].Custom.Field1 = "Route";
-                request.Order.ShipMethodId -= 500;
             }
 
             var response = func(request);

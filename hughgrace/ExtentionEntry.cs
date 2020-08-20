@@ -19,6 +19,7 @@ namespace hughgrace
             services.AddSingleton<IApiEndpoint, CreateTableEndpoint>();
             services.AddSingleton<IApiEndpoint, PopulateTableEndpoint>();
             services.AddSingleton<IApiEndpoint, DeleteTableEndpoint>();
+            services.AddSingleton<IApiEndpoint, QueryTableEndpoint>();
         }
     }
 }
