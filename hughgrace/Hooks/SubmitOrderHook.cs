@@ -9,10 +9,12 @@ namespace hughgrace.Hooks
     public class SubmitOrderHook : IHook<SubmitOrderHookRequest, SubmitOrderHookResponse>
     {
         private readonly IOrderService _orderService;
+        private readonly IDataService _dataService;
 
-        public SubmitOrderHook(IOrderService orderService)
+        public SubmitOrderHook(IOrderService orderService, IDataService dataService)
         {
             _orderService = orderService;
+            _dataService = dataService;
         }
 
         public SubmitOrderHookResponse Invoke(SubmitOrderHookRequest request, Func<SubmitOrderHookRequest, SubmitOrderHookResponse> func)
