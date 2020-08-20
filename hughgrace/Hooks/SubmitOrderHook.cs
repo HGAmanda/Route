@@ -17,13 +17,18 @@ namespace hughgrace.Hooks
 
         public SubmitOrderHookResponse Invoke(SubmitOrderHookRequest request, Func<SubmitOrderHookRequest, SubmitOrderHookResponse> func)
         {
-            if (request.Order.ShipMethodId > 500)
+            var routeIncluded = request.Order.ShipMethodId > 500;
+            if (routeIncluded)
             {
                 request.Order.Custom.Field1 = "Route";
             }
 
             var response = func(request);
-            _orderService.UpdateOrder(new UpdateOrderInfo() { OrderNumber = response.OrderNumber, SpecialInstructions = "Route was used on this Order!" });
+
+            if (routeIncluded)
+            {
+                _orderService.UpdateOrder(new UpdateOrderInfo() { OrderNumber = response.OrderNumber, SpecialInstructions = "Route was used on this Order!" });
+            }
 
             return response;
         }
