@@ -20,10 +20,13 @@ namespace hughgrace.Hooks
         public GetShippingHookResponse Invoke(GetShippingHookRequest request, Func<GetShippingHookRequest, GetShippingHookResponse> func)
         {
             var routeincluded = false;
-            if (request.ShipMethodId > 500)
+            foreach (var item in request.Items)
             {
-                request.ShipMethodId -= 500;
-                routeincluded = true;
+                if (item.Custom.Field1 == "Route")
+                {
+                    routeincluded = true;
+                    break;
+                }
             }
 
             var response = func(request);
