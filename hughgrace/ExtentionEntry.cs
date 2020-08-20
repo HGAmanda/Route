@@ -13,8 +13,8 @@ namespace hughgrace
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IHook<SubmitOrderHookRequest, SubmitOrderHookResponse>, SubmitOrderHook>();
-            services.AddTransient<IHook<GetShippingHookRequest, GetShippingHookResponse>, GetShippingHook>();
+            services.AddScoped<IHook<SubmitOrderHookRequest, SubmitOrderHookResponse>, SubmitOrderHook>();
+            services.AddScoped<IHook<GetShippingHookRequest, GetShippingHookResponse>, GetShippingHook>();
 
             services.AddSingleton<IApiEndpoint, CreateTableEndpoint>();
             services.AddSingleton<IApiEndpoint, PopulateTableEndpoint>();
