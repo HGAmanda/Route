@@ -44,14 +44,13 @@ namespace hughgrace.Hooks
                 }
 
 
-                var query = "SELECT * FROM RouteRate WHERE MinimumChargeAmount <= @MinimumChargeAmount ORDER BY MinimumChargeAmount DESC";
-
+                var query = "SELECT * FROM RouteRate WHERE MinimumChargeAmount <= @MinimumChargeAmount ORDER BY MinimumChargeAmount DESC;";
                 using (var connection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
                     routeInsurance = connection.QueryFirstOrDefault<RouteRate>(query, new { MinimumChargeAmount = subtotal });
                 }
 
-                var routeInstructions = string.Format("Route Shipping Protection - {0}", routeInsurance); 
+                var routeInstructions = string.Format("Route Shipping Protection - {0}", routeInsurance.Rate); 
                 _orderService.UpdateOrder(new UpdateOrderInfo() { OrderNumber = response.OrderNumber, SpecialInstructions = routeInstructions });
             }
 
