@@ -19,6 +19,11 @@ namespace hughgrace.Hooks
         {
             if (request.Order.ShipMethodId > 500)
             {
+                if (request.Order.Custom == null)
+                {
+                    request.Order.Custom = new CustomFields();
+                }
+
                 request.Order.Custom.Field1 = "Route";
             }
 
