@@ -35,12 +35,10 @@ namespace hughgrace.Hooks
                     subtotal += item.Price * item.Quantity;
                 }
 
-                using (var dbConneciton = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+                var query = "SELECT * FROM RouteRate WHERE MinimumChargeAmount <= @MinimumChargeAmount ORDER BY MinimumChargeAmount DESC";
+                using (var connection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
-                    var query = string.Format(@"SELECT * FROM RouteRate
-                        WHERE MinimumChargeAmount <= {0}
-                        ORDER BY MinimumChargeAmount DESC;", subtotal);
-                    var routeInsurance = dbConneciton.QueryFirstOrDefault<RouteRate>(query);
+                    var routeInsurance = connection.QueryFirstOrDefault<RouteRate>(query, new { MinimumChargeAmount = subtotal });
                     if (routeInsurance != null)
                     {
                         response.ShippingAmount += routeInsurance.Rate;
