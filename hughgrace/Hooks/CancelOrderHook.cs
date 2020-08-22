@@ -66,8 +66,7 @@ namespace hughgrace.Hooks
 
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = client.PostAsync("webhooks/orders/HughGrace", content).Result;
+            _ = client.PostAsync("webhooks/orders/HughGrace", content).Result;
 
             client.Dispose();
         }

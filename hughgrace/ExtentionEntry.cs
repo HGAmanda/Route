@@ -6,6 +6,7 @@ using DirectScale.Disco.Extension.Hooks.Orders.Shipping;
 using DirectScale.Disco.Extension.Api;
 using hughgrace.Api;
 using hughgrace.Hooks;
+using DirectScale.Disco.Extension.Hooks.Autoships;
 
 namespace hughgrace
 {
@@ -16,6 +17,8 @@ namespace hughgrace
             services.AddScoped<IHook<SubmitOrderHookRequest, SubmitOrderHookResponse>, SubmitOrderHook>();
             services.AddScoped<IHook<GetShippingHookRequest, GetShippingHookResponse>, GetShippingHook>();
             services.AddScoped<IHook<CancelOrderHookRequest, CancelOrderHookResponse>, CancelOrderHook>();
+
+            services.AddScoped<IHook<CreateAutoshipHookRequest, CreateAutoshipHookResponse>, CreateAutoshipHook>();
 
             services.AddSingleton<IApiEndpoint, CreateTableEndpoint>();
             services.AddSingleton<IApiEndpoint, PopulateTableEndpoint>();
