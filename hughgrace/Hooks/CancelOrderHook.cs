@@ -30,6 +30,8 @@ namespace hughgrace.Hooks
             var response = func(request);
 
             var order = _orderService.GetOrderByOrderNumber(request.OrderNumber);
+            if (!order.SpecialInstructions.Contains("Route Shipping Protection")) return response;
+
             var associate = _associateService.GetAssociate(order.AssociateId);
             var warehouseId = _orderService.GetWarehouseId(associate.Address);
             var orderDateRFC3339 = order.OrderDate.ToString("yyyy-MM-dd'T'HH:mm:ss.fffzzz");
@@ -44,8 +46,8 @@ namespace hughgrace.Hooks
                 OrderId = request.OrderNumber.ToString(),
                 OrderDateUtc = orderDateRFC3339,
                 DistributorId = warehouseId.ToString(),
-                OrderType = nameof(order.OrderType),
-                OrderTotal = order.TotalCost,
+                OrderType = order.OrderType.ToString(),
+                OrderTotal = order.TotalQV,
                 OrderCountry = associate.Address.CountryCode,
                 OrderCurrency = currencyCode,
                 OrderStatus = order.Status,
