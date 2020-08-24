@@ -40,15 +40,15 @@ namespace hughgrace.Hooks
 
             var req = new CancelRouteOrder
             {
-                OrderId = request.OrderNumber,
+                OrderId = request.OrderNumber.ToString(),
                 OrderDateUtc = order.OrderDate,
-                DistributorId = warehouseId,
+                DistributorId = warehouseId.ToString(),
                 OrderType = order.OrderType,
                 OrderTotal = order.TotalCost,
-                OrderContry = associate.Address.CountryCode,
+                OrderCountry = associate.Address.CountryCode,
                 OrderCurrency = currencyCode,
                 OrderStatus = order.Status,
-                EventDataUtc = order.OrderDate
+                EventDateUtc = order.OrderDate
             };
 
             SendRequestToRoute(req);
@@ -66,7 +66,7 @@ namespace hughgrace.Hooks
 
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            _ = client.PostAsync("webhooks/orders/HughGrace", content).Result;
+            _ = client.PostAsync("/webhooks/orders/HughGrace", content).Result;
 
             client.Dispose();
         }
