@@ -32,7 +32,7 @@ namespace hughgrace.Hooks
             var order = _orderService.GetOrderByOrderNumber(request.OrderNumber);
             var associate = _associateService.GetAssociate(order.AssociateId);
             var warehouseId = _orderService.GetWarehouseId(associate.Address);
-            var orderDateWithTimeZone = order.OrderDate.ToString("O");
+            var orderDateRFC3339 = order.OrderDate.ToString("yyyy-MM-dd'T'HH:mm:ss.fffzzz");
             var currencyCode = "USD";
 
             if (order.LineItems.Count > 0 && !string.IsNullOrEmpty(order.LineItems[0].CurrencyCode)) {
@@ -42,7 +42,7 @@ namespace hughgrace.Hooks
             var req = new CancelRouteOrder
             {
                 OrderId = request.OrderNumber.ToString(),
-                OrderDateUtc = orderDateWithTimeZone,
+                OrderDateUtc = orderDateRFC3339,
                 DistributorId = warehouseId.ToString(),
                 OrderType = nameof(order.OrderType),
                 OrderTotal = order.TotalCost,
@@ -50,7 +50,7 @@ namespace hughgrace.Hooks
                 OrderCurrency = currencyCode,
                 OrderStatus = order.Status,
                 EventType = "",
-                EventDateUtc = orderDateWithTimeZone
+                EventDateUtc = orderDateRFC3339
             };
 
             SendRequestToRoute(req);
