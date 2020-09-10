@@ -30,7 +30,10 @@ namespace hughgrace.Hooks
             var response = func(request);
 
             var order = _orderService.GetOrderByOrderNumber(request.OrderNumber);
-            if (!order.SpecialInstructions.Contains("Route Shipping Protection")) return response;
+            if (string.IsNullOrEmpty(order.SpecialInstructions) || !order.SpecialInstructions.Contains("Route Shipping Protection"))
+            {
+                return response;
+            }
 
             var associate = _associateService.GetAssociate(order.AssociateId);
             var warehouseId = _orderService.GetWarehouseId(associate.Address);
