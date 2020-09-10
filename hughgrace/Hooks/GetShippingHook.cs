@@ -12,6 +12,7 @@ namespace hughgrace.Hooks
     public class GetShippingHook : IHook<GetShippingHookRequest, GetShippingHookResponse>
     {
         private readonly IDataService _dataService;
+
         public GetShippingHook(IDataService dataService)
         {
             _dataService = dataService;
@@ -27,21 +28,28 @@ namespace hughgrace.Hooks
             }
 
             var response = func(request);
+
             if (routeincluded)
             {
                 double subtotal = 0;
                 foreach (var item in request.Items)
                 {
-                    subtotal += item.Price * item.Quantity;
+                    if (item.ChargeShipping)
+                    {
+                        subtotal += item.ExtendedPrice;
+                    }
                 }
 
-                var query = "SELECT TOP 1 Rate, MinimumChargeAmount FROM RouteRate WHERE MinimumChargeAmount >= @MinimumChargeAmount ORDER BY MinimumChargeAmount ASC";
-                using (var connection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
+                if (subtotal != 0)
                 {
-                    var routeInsurance = connection.QueryFirstOrDefault<RouteRate>(query, new { MinimumChargeAmount = subtotal });
-                    if (routeInsurance != null)
+                    var query = "SELECT TOP 1 Rate, MinimumChargeAmount FROM RouteRate WHERE MinimumChargeAmount >= @MinimumChargeAmount ORDER BY MinimumChargeAmount ASC";
+                    using (var connection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                     {
-                        response.ShippingAmount += routeInsurance.Rate;
+                        var routeInsurance = connection.QueryFirstOrDefault<RouteRate>(query, new { MinimumChargeAmount = subtotal });
+                        if (routeInsurance != null)
+                        {
+                            response.ShippingAmount += routeInsurance.Rate;
+                        }
                     }
                 }
             }
