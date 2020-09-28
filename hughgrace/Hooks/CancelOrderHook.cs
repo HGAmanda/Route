@@ -15,7 +15,7 @@ namespace hughgrace.Hooks
 {
     public class CancelOrderHook : IHook<CancelOrderHookRequest, CancelOrderHookResponse>
     {
-        private const string URL = "https://directscale-stage.ngrok.io/";
+        private const string URL = "https://directscale.route.com/";
         private readonly IOrderService _orderService;
         private readonly IAssociateService _associateService;
 
