@@ -32,17 +32,17 @@ namespace hughgrace.Api
 
         private string CountRouteRateRows()
         {
-            return "SELECT COUNT(RecordNumber) FROM RouteRate";
+            return "SELECT COUNT(RecordNumber) FROM [client].[RouteRate]";
         }
 
         private string InsertRouteRateTable()
         {
-            return "INSERT INTO RouteRate (Rate, MinimumChargeAmount, RecordNumber) VALUES ";
+            return "INSERT INTO [client].[RouteRate] (Rate, MinimumChargeAmount, RecordNumber) VALUES ";
         }
 
         private string DeleteAllRouteRate()
         {
-            return @"DELETE FROM RouteRate";
+            return @"DELETE FROM [client].[RouteRate]";
         }
 
         public IApiResponse Post(ApiRequest request)
@@ -103,7 +103,7 @@ namespace hughgrace.Api
                     return new Ok(new { Status = 500, Message = "Transaction Rolled Back", Error = ex.Message });
                 }
 
-                rates = connection.Query<RouteRate>("SELECT * FROM RouteRate");
+                rates = connection.Query<RouteRate>("SELECT * FROM [client].[RouteRate]");
             }
 
             return new Ok(new { Status = 1, Rates = rates, SQLRawInsert = sqlRaw, InsertAffect = insertAffect, DeletedAffect = deletedAffect });
