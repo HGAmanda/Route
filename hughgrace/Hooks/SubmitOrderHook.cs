@@ -43,7 +43,7 @@ namespace hughgrace.Hooks
                     subtotal += item.Price * item.Quantity;
                 }
 
-                var query = "SELECT TOP 1 Rate, MinimumChargeAmount FROM RouteRate WHERE MinimumChargeAmount >= @MinimumChargeAmount ORDER BY MinimumChargeAmount ASC";
+                var query = "SELECT TOP 1 Rate, MinimumChargeAmount FROM [client].[RouteRate] WHERE MinimumChargeAmount >= @MinimumChargeAmount ORDER BY MinimumChargeAmount ASC";
                 using (var connection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
                 {
                     routeInsurance = connection.QueryFirstOrDefault<RouteRate>(query, new { MinimumChargeAmount = subtotal });
