@@ -32,7 +32,7 @@ namespace hughgrace.Api
             {
                 connection.Open();
 
-                rates = connection.Query<RouteRate>("SELECT * FROM RouteRate");
+                rates = connection.Query<RouteRate>("SELECT * FROM [client].[RouteRate]");
             }
 
             return new Ok(new { Status = 1, Rates = rates });
