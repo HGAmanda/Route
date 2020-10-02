@@ -27,7 +27,7 @@ namespace hughgrace.Api
             int affect;
             using (var dbConnection = new SqlConnection(_dataService.ClientConnectionString.ToString()))
             {
-                var commandStr = @"CREATE TABLE Route[client].[RouteRate] (Rate float NOT NULL, MinimumChargeAmount float NOT NULL, RecordNumber int NOT NULL PRIMARY KEY);";
+                var commandStr = @"CREATE TABLE [client].[RouteRate] (Rate float NOT NULL, MinimumChargeAmount float NOT NULL, RecordNumber int NOT NULL PRIMARY KEY);";
                 dbConnection.Open();
                 using (var command = new SqlCommand(commandStr, dbConnection))
                     affect = command.ExecuteNonQuery();
