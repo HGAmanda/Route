@@ -19,7 +19,7 @@ namespace hughgrace
             services.AddScoped<IHook<GetShippingHookRequest, GetShippingHookResponse>, GetShippingHook>();
             services.AddScoped<IHook<CancelOrderHookRequest, CancelOrderHookResponse>, CancelOrderHook>();
             services.AddScoped<IHook<GetCouponAdjustedVolumeHookRequest, GetCouponAdjustedVolumeHookResponse>, GetCouponVolume>();
-            services.AddScoped<IHook<ProcessCouponCodesHookRequest, ProcessCouponCodesHookResponse>, ProcessCouponCodes>();
+            //services.AddScoped<IHook<ProcessCouponCodesHookRequest, ProcessCouponCodesHookResponse>, ProcessCouponCodes>();
 
             services.AddSingleton<IApiEndpoint, CreateTableEndpoint>();
             services.AddSingleton<IApiEndpoint, PopulateTableEndpoint>();
